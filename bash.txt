@@ -1,0 +1,40 @@
+Скрипт для расчета всех доступных поддержек в PhyML:
+
+for FILE in *;
+do phyml -i $FILE -d aa -b -1 --run_id 'alrt'
+phyml -i $FILE -d aa -b -2 --run_id 'chi2'
+phyml -i $FILE -d aa -b -4 --run_id 'sh'
+phyml -i $FILE -d aa -b -5 --run_id 'bayes'
+done
+
+Скрипт для получения 100 бутстреп-реплик в FastME:
+
+for FILE in *
+do fastme -i $FILE -p -b 100 -T 12
+done
+
+Cкрипт для получения 100 реплик после перестановочного теста:
+
+for FILE in *
+do python3 permute.py $FILE
+done
+
+Скрипт для подсчета бутстреп-поддержек двумя способами:
+
+for f1 in *.phy_phyml_tree_alrt.txt
+do f2=${f1%.phy_phyml_tree_alrt.txt}.phy_fastme_boot.txt
+f3=${f1%.phy_phyml_tree_alrt.txt}.phy_tbe_tree.nwk
+f4=${f1%.phy_phyml_tree_alrt.txt}.phy_fbs_tree.nwk 
+../booster -a tbe -i $f1 -b $f2 -@ 12 -o $f3
+../booster -a fbp -i $f1 -b $f2 -@ 12 -o $f4
+done
+
+Скрипт для подсчета поддержек перестановочного теста + TBE:
+
+for f1 in *.phy_phyml_tree_alrt.txt
+do f2=${f1%.phy_phyml_tree_alrt.txt}.dist.nwk
+f3=${f1%.phy_phyml_tree_alrt.txt}.perm_tbe_tree.nwk
+f4=${f1%.phy_phyml_tree_alrt.txt}.perm_tree.nwk
+../booster -a tbe -i $f1 -b $f2 -@ 12 -o $f3
+../booster -a fbp -i $f1 -b $f2 -@ 12 -o $f4
+done
